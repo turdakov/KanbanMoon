@@ -1,4 +1,4 @@
-import { Plugin, Notice } from 'obsidian'
+import { Plugin, Notice, TFile } from 'obsidian'
 import {
 	IKanbanSettings,
 	DEFAULT_SETTINGS,
@@ -12,10 +12,16 @@ import { DeleteConfirmModal } from './ui/deleteConfirmModal'
 import { normalizeTag } from './views/renderKanban/utils'
 import { t } from './lang/helpers'
 import { toSafeFm, getFmStringArray } from './utils/frontmatter'
+import {
+	importTasksFromDailyNote,
+	isDailyNoteFile,
+	resolveDailyNoteFile,
+} from './utils/dailyNotes'
 
 export default class KanbanMoonlightPlugin extends Plugin {
 	settings: IKanbanSettings = DEFAULT_SETTINGS
 	private refreshTimer: number | null = null
+	private dailyNoteImportTimers: Map<string, number> = new Map()
 
 	getActiveBoard() {
 		return getActiveBoard(this.settings)
@@ -106,8 +112,71 @@ export default class KanbanMoonlightPlugin extends Plugin {
 			}),
 		)
 
+		this.addCommand({
+			id: 'import-daily-note-tasks',
+			name: t('DAILY_NOTES_IMPORT_BTN'),
+			callback: () => {
+				void this.importTodayDailyNoteTasks()
+			},
+		})
+
+		this.registerEvent(
+			this.app.vault.on('modify', (file) => {
+				if (!(file instanceof TFile)) return
+				if (!this.settings.dailyNotesAutoImport) return
+				if (!isDailyNoteFile(file, this.settings.dailyNotesFolder)) return
+				this.scheduleDailyNoteImport(file)
+			}),
+		)
+
 		// Registrar la pestaña de ajustes
 		this.addSettingTab(new KanbanMoonlightSettingTab(this.app, this))
+	}
+
+	onunload() {
+		if (this.refreshTimer) window.clearTimeout(this.refreshTimer)
+		this.dailyNoteImportTimers.forEach((timer) => window.clearTimeout(timer))
+		this.dailyNoteImportTimers.clear()
+	}
+
+	private scheduleDailyNoteImport(file: TFile) {
+		const existingTimer = this.dailyNoteImportTimers.get(file.path)
+		if (existingTimer) window.clearTimeout(existingTimer)
+
+		const timer = window.setTimeout(() => {
+			this.dailyNoteImportTimers.delete(file.path)
+			void this.runDailyNoteImport(file)
+		}, 1500)
+
+		this.dailyNoteImportTimers.set(file.path, timer)
+	}
+
+	async importTodayDailyNoteTasks() {
+		const file = resolveDailyNoteFile(this.app, this.settings.dailyNotesFolder)
+		if (!file) {
+			new Notice(t('DAILY_NOTES_IMPORT_NOT_FOUND'))
+			return
+		}
+		await this.runDailyNoteImport(file)
+	}
+
+	private async runDailyNoteImport(file: TFile) {
+		try {
+			const count = await importTasksFromDailyNote(this.app, this, file)
+			if (count > 0) {
+				new Notice(
+					t('DAILY_NOTES_IMPORT_SUCCESS').replace(
+						'{count}',
+						String(count),
+					),
+				)
+			} else {
+				new Notice(t('DAILY_NOTES_IMPORT_NONE'))
+			}
+		} catch (err) {
+			new Notice(t('DAILY_NOTES_IMPORT_ERROR'))
+			console.error('Error importing daily note tasks:', err)
+		}
 	}
 
 	// Función para abrir o enfocar la pestaña del Kanban

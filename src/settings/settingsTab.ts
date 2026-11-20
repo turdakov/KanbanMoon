@@ -81,6 +81,14 @@ export class KanbanMoonlightSettingTab extends PluginSettingTab {
 				},
 			},
 			{
+				name: t('DAILY_NOTES_TITLE'),
+				render: (setting) => {
+					setting.controlEl.empty()
+					setting.setClass('kanban-setting-section')
+					this.renderDailyNotesSection(setting)
+				},
+			},
+			{
 				name: t('PERSONS_TITLE'),
 				render: (setting) => {
 					setting.controlEl.empty()
@@ -464,6 +472,56 @@ export class KanbanMoonlightSettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings()
 				})
 		})
+	}
+
+	private renderDailyNotesSection(setting: Setting) {
+		const containerEl = setting.controlEl
+		containerEl.addClass('kanban-setting-section')
+
+		new Setting(containerEl)
+			.setName(t('DAILY_NOTES_FOLDER_LABEL'))
+			.setDesc(t('DAILY_NOTES_FOLDER_DESC'))
+			.addText((text) => {
+				text.setPlaceholder(t('DAILY_NOTES_FOLDER_PLACEHOLDER'))
+					.setValue(this.plugin.settings.dailyNotesFolder)
+					.onChange(async (value) => {
+						this.plugin.settings.dailyNotesFolder = value
+						await this.plugin.saveSettings()
+					})
+			})
+
+		new Setting(containerEl)
+			.setName(t('DAILY_NOTES_HEADING_LABEL'))
+			.setDesc(t('DAILY_NOTES_HEADING_DESC'))
+			.addText((text) => {
+				text.setPlaceholder(t('DAILY_NOTES_HEADING_PLACEHOLDER'))
+					.setValue(this.plugin.settings.dailyNotesHeading)
+					.onChange(async (value) => {
+						this.plugin.settings.dailyNotesHeading = value
+						await this.plugin.saveSettings()
+					})
+			})
+
+		new Setting(containerEl)
+			.setName(t('DAILY_NOTES_AUTO_LABEL'))
+			.setDesc(t('DAILY_NOTES_AUTO_DESC'))
+			.addToggle((toggle) => {
+				toggle
+					.setValue(this.plugin.settings.dailyNotesAutoImport)
+					.onChange(async (value) => {
+						this.plugin.settings.dailyNotesAutoImport = value
+						await this.plugin.saveSettings()
+					})
+			})
+
+		new Setting(containerEl)
+			.setName(t('DAILY_NOTES_IMPORT_BTN'))
+			.setDesc(t('DAILY_NOTES_IMPORT_DESC'))
+			.addButton((btn) => {
+				btn.setButtonText(t('DAILY_NOTES_IMPORT_BTN')).onClick(() => {
+					void this.plugin.importTodayDailyNoteTasks()
+				})
+			})
 	}
 
 	private renderPersonSettingsSection(setting: Setting) {

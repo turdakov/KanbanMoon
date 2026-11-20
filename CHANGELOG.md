@@ -4,6 +4,12 @@ All notable changes to Kanban Moonlight will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [Unreleased]
+
+### Added
+
+- **Daily notes → Backlog import**: Unchecked `- [ ]` tasks from a daily note can now be added to the active board's backlog automatically. Configure the daily notes folder and an optional tasks heading in Settings, enable auto-import, or run the **Import tasks from today's daily note** command manually. Imported lines are turned into a link to the new backlog note so they are never imported twice.
+
 ## [1.4.0] - 13/08/2026
 
 ### Added

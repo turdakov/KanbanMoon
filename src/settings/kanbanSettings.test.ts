@@ -26,6 +26,9 @@ describe('getActiveBoard', () => {
 			defaultView: ViewType.kanban,
 			ganttZoom: GanttZoom.week,
 			lastSeenVersion: '',
+			dailyNotesFolder: '',
+			dailyNotesHeading: '',
+			dailyNotesAutoImport: false,
 		}
 
 		const result = getActiveBoard(settings)
@@ -48,6 +51,9 @@ describe('getActiveBoard', () => {
 			defaultView: ViewType.kanban,
 			ganttZoom: GanttZoom.week,
 			lastSeenVersion: '',
+			dailyNotesFolder: '',
+			dailyNotesHeading: '',
+			dailyNotesAutoImport: false,
 		}
 
 		const result = getActiveBoard(settings)
@@ -66,6 +72,9 @@ describe('getActiveBoard', () => {
 			defaultView: ViewType.kanban,
 			ganttZoom: GanttZoom.week,
 			lastSeenVersion: '',
+			dailyNotesFolder: '',
+			dailyNotesHeading: '',
+			dailyNotesAutoImport: false,
 		}
 
 		const result = getActiveBoard(settings)

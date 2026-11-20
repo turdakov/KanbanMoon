@@ -11,6 +11,7 @@ A native Kanban board plugin for [Obsidian](https://obsidian.md). Transform your
 - **Three View Modes**: Toggle between Board, Gantt Chart, and Dashboard views.
 - **Drag & Drop**: Move notes between columns by dragging cards — frontmatter `state` is updated automatically with a full history log.
 - **Create Task**: Create new tasks directly from the Kanban board or via the command palette. A modal lets you set title, description, category, and initial column.
+- **Daily notes → Backlog**: Automatically (or on demand) add unchecked tasks from your daily notes to the board's backlog, with an optional heading to scope the scan.
 - **Delete Task**: Remove tasks with a single click. A confirmation dialog prevents accidental deletion. Also available as a command.
 - **Search / Filter**: Real-time search across note titles, descriptions, categories, and tags with debounced input.
 - **Customizable Columns**: Add, remove, reorder and rename columns. Configure each column's icon and color. Each board has its own column configuration.
@@ -112,6 +113,7 @@ Each board filters notes by a combination of tag and/or folder. Notes are displa
 | **Start Column**           | Select which column marks when a task begins (used by the Gantt chart).                         |
 | **Categories**             | Define note categories with icons and custom colors per board.                                  |
 | **People**                 | Manage team members with name, email, color, and notes.                                         |
+| **Daily notes**             | Folder for your daily notes, an optional tasks heading, auto-import toggle, and a manual import button. |
 
 Each board has its own independent configuration for columns, categories, completed column, and start column. Board settings (name, tag, folder) are managed via the Board Modal.
 
@@ -121,6 +123,17 @@ Each board has its own independent configuration for columns, categories, comple
 | ---------------------- | ------------------------------------------------------ |
 | **Create New Task**    | Opens a modal to create a new kanban task.             |
 | **Delete Kanban Task** | Deletes the currently open note if it's a kanban task. |
+| **Import tasks from today's daily note** | Scans today's daily note for unchecked tasks and adds them to the active board's backlog. |
+
+## Daily notes → Backlog
+
+Kanban Moonlight can turn the unchecked tasks in your daily notes into backlog cards, so you don't have to create them by hand:
+
+1. In Settings, under **Daily notes**, set the **Daily notes folder** (daily notes must be named `YYYY-MM-DD.md`, leave empty for the vault root).
+2. Optionally set a **Tasks heading** (e.g. `Tasks`) to only scan the section under that heading instead of the whole note.
+3. Enable **Auto-import tasks** to import new tasks automatically whenever a daily note is edited, or use the **Import tasks from today's daily note** command / settings button to run it on demand.
+
+Each imported `- [ ] ...` line is converted into a link to its new backlog note (`- [ ] [[Task title]]`), so re-running the import never creates duplicates. All data stays local to your vault — nothing is sent anywhere.
 
 ## Demos
 

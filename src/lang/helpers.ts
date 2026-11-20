@@ -176,6 +176,25 @@ const AUTHORS_LANGS = {
 		UPDATE_REMOVED: 'Removed',
 		UPDATE_MIGRATION: 'Migration',
 		UPDATE_FUNDING: 'Buy Me a Coffee',
+		DAILY_NOTES_TITLE: 'Daily notes',
+		DAILY_NOTES_FOLDER_LABEL: 'Daily notes folder',
+		DAILY_NOTES_FOLDER_DESC:
+			'Folder where your daily notes are stored. Daily notes must be named with the date format YYYY-MM-DD (e.g. 2026-11-20.md). Leave empty to use the vault root.',
+		DAILY_NOTES_FOLDER_PLACEHOLDER: 'Daily notes',
+		DAILY_NOTES_HEADING_LABEL: 'Tasks heading (optional)',
+		DAILY_NOTES_HEADING_DESC:
+			'Only import unchecked tasks listed under this heading (e.g. "Tasks"). Leave empty to scan the whole note.',
+		DAILY_NOTES_HEADING_PLACEHOLDER: 'Tasks',
+		DAILY_NOTES_AUTO_LABEL: 'Auto-import tasks',
+		DAILY_NOTES_AUTO_DESC:
+			"Automatically add unchecked tasks from a daily note to the backlog whenever that note is edited.",
+		DAILY_NOTES_IMPORT_BTN: "Import tasks from today's daily note",
+		DAILY_NOTES_IMPORT_DESC:
+			"Manually scan today's daily note and add its unchecked tasks to the backlog now.",
+		DAILY_NOTES_IMPORT_SUCCESS: '{count} task(s) added to the backlog.',
+		DAILY_NOTES_IMPORT_NONE: 'No new tasks found in the daily note.',
+		DAILY_NOTES_IMPORT_NOT_FOUND: "Today's daily note was not found.",
+		DAILY_NOTES_IMPORT_ERROR: 'Error importing tasks from the daily note.',
 	},
 	es: {
 		TAG_LABEL: 'Etiqueta de Proyectos',
@@ -354,6 +373,25 @@ const AUTHORS_LANGS = {
 		UPDATE_REMOVED: 'Eliminado',
 		UPDATE_MIGRATION: 'Migración',
 		UPDATE_FUNDING: 'Invitame un Café',
+		DAILY_NOTES_TITLE: 'Notas diarias',
+		DAILY_NOTES_FOLDER_LABEL: 'Carpeta de notas diarias',
+		DAILY_NOTES_FOLDER_DESC:
+			'Carpeta donde se guardan tus notas diarias. Deben nombrarse con el formato de fecha YYYY-MM-DD (ej. 2026-11-20.md). Déjalo vacío para usar la raíz del vault.',
+		DAILY_NOTES_FOLDER_PLACEHOLDER: 'Notas diarias',
+		DAILY_NOTES_HEADING_LABEL: 'Encabezado de tareas (opcional)',
+		DAILY_NOTES_HEADING_DESC:
+			'Importa solo las tareas sin marcar bajo este encabezado (ej. "Tareas"). Déjalo vacío para revisar toda la nota.',
+		DAILY_NOTES_HEADING_PLACEHOLDER: 'Tareas',
+		DAILY_NOTES_AUTO_LABEL: 'Importar tareas automáticamente',
+		DAILY_NOTES_AUTO_DESC:
+			'Agrega automáticamente al backlog las tareas sin marcar de una nota diaria cada vez que se edita.',
+		DAILY_NOTES_IMPORT_BTN: 'Importar tareas de la nota diaria de hoy',
+		DAILY_NOTES_IMPORT_DESC:
+			'Revisa la nota diaria de hoy y agrega ahora sus tareas sin marcar al backlog.',
+		DAILY_NOTES_IMPORT_SUCCESS: '{count} tarea(s) agregadas al backlog.',
+		DAILY_NOTES_IMPORT_NONE: 'No se encontraron tareas nuevas en la nota diaria.',
+		DAILY_NOTES_IMPORT_NOT_FOUND: 'No se encontró la nota diaria de hoy.',
+		DAILY_NOTES_IMPORT_ERROR: 'Error al importar tareas de la nota diaria.',
 	},
 }
 

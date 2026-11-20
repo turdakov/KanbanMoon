@@ -125,6 +125,9 @@ export interface IKanbanSettings {
 	defaultView: ViewType
 	ganttZoom: GanttZoom
 	lastSeenVersion: string
+	dailyNotesFolder: string
+	dailyNotesHeading: string
+	dailyNotesAutoImport: boolean
 }
 
 export const DEFAULT_SETTINGS: IKanbanSettings = {
@@ -138,6 +141,9 @@ export const DEFAULT_SETTINGS: IKanbanSettings = {
 	defaultView: ViewType.kanban,
 	ganttZoom: GanttZoom.week,
 	lastSeenVersion: '',
+	dailyNotesFolder: '',
+	dailyNotesHeading: '',
+	dailyNotesAutoImport: false,
 }
 
 export function getActiveBoard(settings: IKanbanSettings): IBoard {

@@ -50,6 +50,9 @@ export function migrateSettings(
 			defaultView: ViewType.kanban,
 			ganttZoom: GanttZoom.week,
 			lastSeenVersion: '',
+			dailyNotesFolder: '',
+			dailyNotesHeading: '',
+			dailyNotesAutoImport: false,
 		}
 	}
 
@@ -130,6 +133,18 @@ export function migrateSettings(
 				typeof raw.lastSeenVersion === 'string'
 					? raw.lastSeenVersion
 					: '',
+			dailyNotesFolder:
+				typeof raw.dailyNotesFolder === 'string'
+					? raw.dailyNotesFolder
+					: '',
+			dailyNotesHeading:
+				typeof raw.dailyNotesHeading === 'string'
+					? raw.dailyNotesHeading
+					: '',
+			dailyNotesAutoImport:
+				typeof raw.dailyNotesAutoImport === 'boolean'
+					? raw.dailyNotesAutoImport
+					: false,
 		}
 	}
 
@@ -174,6 +189,9 @@ export function migrateSettings(
 			defaultView: ViewType.kanban,
 			ganttZoom: GanttZoom.week,
 			lastSeenVersion: '',
+			dailyNotesFolder: '',
+			dailyNotesHeading: '',
+			dailyNotesAutoImport: false,
 		}
 	}
 
@@ -188,5 +206,8 @@ export function migrateSettings(
 		defaultView: ViewType.kanban,
 		ganttZoom: GanttZoom.week,
 		lastSeenVersion: '',
+		dailyNotesFolder: '',
+		dailyNotesHeading: '',
+		dailyNotesAutoImport: false,
 	}
 }
