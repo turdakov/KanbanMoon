@@ -2,9 +2,11 @@ import { describe, it, expect } from 'vitest'
 import {
 	findDailyNoteSection,
 	extractUncheckedTaskLines,
+	filterStableTasks,
 	sanitizeTaskTitle,
 	getDailyNoteFilePath,
 	isDailyNoteFile,
+	type DailyNoteTaskLine,
 } from './dailyNotes'
 
 describe('findDailyNoteSection', () => {
@@ -75,15 +77,17 @@ describe('extractUncheckedTaskLines', () => {
 
 		const tasks = extractUncheckedTaskLines(content, '')
 		expect(tasks).toEqual([
-			{ lineIndex: 1, text: 'Buy milk' },
-			{ lineIndex: 3, text: 'Call plumber' },
+			{ lineIndex: 1, text: 'Buy milk', raw: '- [ ] Buy milk' },
+			{ lineIndex: 3, text: 'Call plumber', raw: '* [ ] Call plumber' },
 		])
 	})
 
 	it('skips tasks already linked to an imported note', () => {
 		const content = ['- [ ] [[Buy milk]]', '- [ ] New task'].join('\n')
 		const tasks = extractUncheckedTaskLines(content, '')
-		expect(tasks).toEqual([{ lineIndex: 1, text: 'New task' }])
+		expect(tasks).toEqual([
+			{ lineIndex: 1, text: 'New task', raw: '- [ ] New task' },
+		])
 	})
 
 	it('only scans the configured heading section', () => {
@@ -95,7 +99,50 @@ describe('extractUncheckedTaskLines', () => {
 		].join('\n')
 
 		const tasks = extractUncheckedTaskLines(content, 'Tasks')
-		expect(tasks).toEqual([{ lineIndex: 1, text: 'In section' }])
+		expect(tasks).toEqual([
+			{ lineIndex: 1, text: 'In section', raw: '- [ ] In section' },
+		])
+	})
+})
+
+describe('filterStableTasks', () => {
+	const task = (lineIndex: number, text: string): DailyNoteTaskLine => ({
+		lineIndex,
+		text,
+		raw: `- [ ] ${text}`,
+	})
+
+	it('treats a task not seen before as pending, not ready', () => {
+		const result = filterStableTasks([task(0, 'Buy milk')], new Map())
+		expect(result.ready).toEqual([])
+		expect(result.pending.get(0)).toBe('Buy milk')
+	})
+
+	it('treats a task as ready once its text matches the previous scan', () => {
+		const previouslySeen = new Map([[0, 'Buy milk']])
+		const result = filterStableTasks([task(0, 'Buy milk')], previouslySeen)
+		expect(result.ready).toEqual([task(0, 'Buy milk')])
+		expect(result.pending.size).toBe(0)
+	})
+
+	it('keeps a task pending if its text changed since the previous scan', () => {
+		const previouslySeen = new Map([[0, 'Buy mlik']])
+		const result = filterStableTasks([task(0, 'Buy milk')], previouslySeen)
+		expect(result.ready).toEqual([])
+		expect(result.pending.get(0)).toBe('Buy milk')
+	})
+
+	it('handles each line independently', () => {
+		const previouslySeen = new Map([
+			[0, 'Buy milk'],
+			[1, 'Call plumber'],
+		])
+		const result = filterStableTasks(
+			[task(0, 'Buy milk'), task(1, 'Call plumber (urgent)')],
+			previouslySeen,
+		)
+		expect(result.ready).toEqual([task(0, 'Buy milk')])
+		expect(result.pending.get(1)).toBe('Call plumber (urgent)')
 	})
 })
 

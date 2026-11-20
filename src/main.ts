@@ -13,15 +13,20 @@ import { normalizeTag } from './views/renderKanban/utils'
 import { t } from './lang/helpers'
 import { toSafeFm, getFmStringArray } from './utils/frontmatter'
 import {
+	extractUncheckedTaskLines,
+	filterStableTasks,
+	importTaskLines,
 	importTasksFromDailyNote,
 	isDailyNoteFile,
 	resolveDailyNoteFile,
+	type PendingTaskTexts,
 } from './utils/dailyNotes'
 
 export default class KanbanMoonlightPlugin extends Plugin {
 	settings: IKanbanSettings = DEFAULT_SETTINGS
 	private refreshTimer: number | null = null
 	private dailyNoteImportTimers: Map<string, number> = new Map()
+	private dailyNotePendingTasks: Map<string, PendingTaskTexts> = new Map()
 
 	getActiveBoard() {
 		return getActiveBoard(this.settings)
@@ -137,6 +142,7 @@ export default class KanbanMoonlightPlugin extends Plugin {
 		if (this.refreshTimer) window.clearTimeout(this.refreshTimer)
 		this.dailyNoteImportTimers.forEach((timer) => window.clearTimeout(timer))
 		this.dailyNoteImportTimers.clear()
+		this.dailyNotePendingTasks.clear()
 	}
 
 	private scheduleDailyNoteImport(file: TFile) {
@@ -145,7 +151,7 @@ export default class KanbanMoonlightPlugin extends Plugin {
 
 		const timer = window.setTimeout(() => {
 			this.dailyNoteImportTimers.delete(file.path)
-			void this.runDailyNoteImport(file)
+			void this.runAutoDailyNoteImport(file)
 		}, 1500)
 
 		this.dailyNoteImportTimers.set(file.path, timer)
@@ -157,12 +163,54 @@ export default class KanbanMoonlightPlugin extends Plugin {
 			new Notice(t('DAILY_NOTES_IMPORT_NOT_FOUND'))
 			return
 		}
-		await this.runDailyNoteImport(file)
-	}
 
-	private async runDailyNoteImport(file: TFile) {
 		try {
 			const count = await importTasksFromDailyNote(this.app, this, file)
+			new Notice(
+				count > 0
+					? t('DAILY_NOTES_IMPORT_SUCCESS').replace(
+							'{count}',
+							String(count),
+						)
+					: t('DAILY_NOTES_IMPORT_NONE'),
+			)
+		} catch (err) {
+			new Notice(t('DAILY_NOTES_IMPORT_ERROR'))
+			console.error('Error importing daily note tasks:', err)
+		}
+	}
+
+	/**
+	 * Auto-import path: a task's text must stay unchanged between two
+	 * scans before it is imported, so a task still being typed is never
+	 * exported, and the title used is always the latest, settled one.
+	 */
+	private async runAutoDailyNoteImport(file: TFile) {
+		try {
+			const content = await this.app.vault.read(file)
+			const candidates = extractUncheckedTaskLines(
+				content,
+				this.settings.dailyNotesHeading,
+			)
+			const previouslySeen =
+				this.dailyNotePendingTasks.get(file.path) ??
+				new Map<number, string>()
+			const { ready, pending } = filterStableTasks(
+				candidates,
+				previouslySeen,
+			)
+
+			if (pending.size > 0) {
+				this.dailyNotePendingTasks.set(file.path, pending)
+				// Some lines are still settling: check again after a pause.
+				this.scheduleDailyNoteImport(file)
+			} else {
+				this.dailyNotePendingTasks.delete(file.path)
+			}
+
+			if (ready.length === 0) return
+
+			const count = await importTaskLines(this.app, this, file, ready)
 			if (count > 0) {
 				new Notice(
 					t('DAILY_NOTES_IMPORT_SUCCESS').replace(
@@ -170,8 +218,6 @@ export default class KanbanMoonlightPlugin extends Plugin {
 						String(count),
 					),
 				)
-			} else {
-				new Notice(t('DAILY_NOTES_IMPORT_NONE'))
 			}
 		} catch (err) {
 			new Notice(t('DAILY_NOTES_IMPORT_ERROR'))

@@ -187,7 +187,7 @@ const AUTHORS_LANGS = {
 		DAILY_NOTES_HEADING_PLACEHOLDER: 'Tasks',
 		DAILY_NOTES_AUTO_LABEL: 'Auto-import tasks',
 		DAILY_NOTES_AUTO_DESC:
-			"Automatically add unchecked tasks from a daily note to the backlog whenever that note is edited.",
+			'Automatically add unchecked tasks from a daily note to the backlog. A task is only imported once you stop editing it.',
 		DAILY_NOTES_IMPORT_BTN: "Import tasks from today's daily note",
 		DAILY_NOTES_IMPORT_DESC:
 			"Manually scan today's daily note and add its unchecked tasks to the backlog now.",
@@ -384,7 +384,7 @@ const AUTHORS_LANGS = {
 		DAILY_NOTES_HEADING_PLACEHOLDER: 'Tareas',
 		DAILY_NOTES_AUTO_LABEL: 'Importar tareas automáticamente',
 		DAILY_NOTES_AUTO_DESC:
-			'Agrega automáticamente al backlog las tareas sin marcar de una nota diaria cada vez que se edita.',
+			'Agrega automáticamente al backlog las tareas sin marcar de una nota diaria. Una tarea solo se importa cuando dejas de editarla.',
 		DAILY_NOTES_IMPORT_BTN: 'Importar tareas de la nota diaria de hoy',
 		DAILY_NOTES_IMPORT_DESC:
 			'Revisa la nota diaria de hoy y agrega ahora sus tareas sin marcar al backlog.',

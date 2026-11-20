@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 - **Daily notes → Backlog import**: Unchecked `- [ ]` tasks from a daily note can now be added to the active board's backlog automatically. Configure the daily notes folder and an optional tasks heading in Settings, enable auto-import, or run the **Import tasks from today's daily note** command manually. Imported lines are turned into a link to the new backlog note so they are never imported twice.
 
+### Changed
+
+- **Daily notes auto-import**: A task is now only imported once its text stays unchanged between two checks, so a task is never exported while it's still being typed or edited, and the title used is always the latest, settled one.
+
 ## [1.4.0] - 13/08/2026
 
 ### Added
